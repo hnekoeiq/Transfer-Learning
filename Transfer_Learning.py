@@ -22,6 +22,9 @@ from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.manifold import TSNE
+from sklearn.manifold import LocallyLinearEmbedding
 
 
 # In[2]:
@@ -130,249 +133,95 @@ _ , (test , y_test) = cifar100.load_data()
 
 
 
-# n_components_list = [550, 750, 1024]
-# C_list = [1, 10, 100]
-# for n_components in n_components_list:
-#     for C in C_list:
-#         print(n_components)
-#         print(C)
-#         #Dimensionality Reduction on Features
-#         pca = PCA(n_components=n_components)
-#         components_pca = pca.fit(train_feat)
-#         X_train= pca.transform(train_feat)
-#         X_test= pca.transform(test_feat)
+n_components_list = [550, 750, 1024]
+C_list = [1, 10, 100]
+for n_components in n_components_list:
+    for C in C_list:
+        print(n_components)
+        print(C)
+        #Dimensionality Reduction on Features
+        pca = PCA(n_components=n_components)
+        components_pca = pca.fit(train_feat)
+        X_train= pca.transform(train_feat)
+        X_test= pca.transform(test_feat)
 
-#         #Classifier SVM Linear Kernel 
-#         clf = SVC(C=C, gamma='auto', kernel='rbf')
-#         clf = clf.fit(X_train,train_labels)
-#         predictions_tr = (clf.predict(X_test))
+        #Classifier SVM Linear Kernel 
+        clf = SVC(C=C, gamma='auto', kernel='rbf')
+        clf = clf.fit(X_train,train_labels)
+        predictions_tr = (clf.predict(X_test))
 
-#         #20% Test Data Accuracy
-#         test_acc = accuracy_score(y_test,predictions_tr)
-#         print("Test Accuracy: %0.4f" % test_acc)
-
-
-# In[ ]:
+        #20% Test Data Accuracy
+        test_acc = accuracy_score(y_test,predictions_tr)
+        print("Test Accuracy: %0.4f" % test_acc)
 
 
-# from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+# LDA Classifier
 
-# n_components_list = [1024]
-# C_list = [1]
-# for n_components in n_components_list:
-#     for C in C_list:
-#         print(n_components)
-#         #Dimensionality Reduction on Features
-#         pca = PCA(n_components=n_components)
-#         components_pca = pca.fit(train_feat)
-#         X_train= pca.transform(train_feat)
-#         X_test= pca.transform(test_feat)
+
+n_components_list = [1024]
+C_list = [1]
+for n_components in n_components_list:
+    for C in C_list:
+        print(n_components)
+        #Dimensionality Reduction on Features
+        pca = PCA(n_components=n_components)
+        components_pca = pca.fit(train_feat)
+        X_train= pca.transform(train_feat)
+        X_test= pca.transform(test_feat)
         
-#         #Classifier SVM Linear Kernel
-#         clf = LinearDiscriminantAnalysis()
-#         clf.fit(X_train, train_labels)
-#         predictions_tr = (clf.predict(X_test))
+        #Classifier SVM Linear Kernel
+        clf = LinearDiscriminantAnalysis()
+        clf.fit(X_train, train_labels)
+        predictions_tr = (clf.predict(X_test))
 
-#         #20% Test Data Accuracy
-#         test_acc = accuracy_score(y_test,predictions_tr)
-#         print("Test Accuracy: %0.4f" % test_acc)
-
-
-# In[ ]:
-
-
-# from sklearn.manifold import TSNE
-
-# n_components_list = [3]
-# C_list = [1]
-# for n_components in n_components_list:
-#     for C in C_list:
-#         print(n_components)
-#         print(C)
-#         X_train_Embedded_tsne = TSNE(n_components=n_components).fit_transform(train_feat)
-#         X_test_Embedded_tsne = TSNE(n_components=n_components).fit_transform(test_feat)
+        #20% Test Data Accuracy
+        test_acc = accuracy_score(y_test,predictions_tr)
+        print("Test Accuracy: %0.4f" % test_acc)
         
-#         #Classifier SVM Linear Kernel 
-#         clf = SVC(C=C, gamma='auto', kernel='rbf')
-#         clf = clf.fit(X_train_Embedded,train_labels)
-#         predictions_tr = (clf.predict(X_test_Embedded))
-
-#         #20% Test Data Accuracy
-#         test_acc = accuracy_score(y_test,predictions_tr)
-#         print("Test Accuracy: %0.4f" % test_acc)
-
-
-# In[ ]:
-
-
-# from sklearn.manifold import LocallyLinearEmbedding
-
-# n_components_list = [2, 10, 50, 100]
-# C_list = [1]
-# for n_components in n_components_list:
-#     for C in C_list:
-#         print(n_components)
-#         print(C)
-#         X_train_Embedded_LLE = LocallyLinearEmbedding(n_components=n_components).fit_transform(train_feat)
-#         X_test_Embedded_LLE = LocallyLinearEmbedding(n_components=n_components).fit_transform(test_feat)
-        
-#         print(X_train_Embedded_LLE.shape)
-#         #Classifier SVM Linear Kernel 
-#         clf = SVC(C=C, gamma='auto', kernel='rbf')
-#         clf = clf.fit(X_train_Embedded_LLE,train_labels)
-#         predictions_tr = (clf.predict(X_test_Embedded_LLE))
-
-#         #20% Test Data Accuracy
-#         test_acc = accuracy_score(y_test,predictions_tr)
-#         print("Test Accuracy: %0.4f" % test_acc)
-
-
-# In[15]:
-
-
-def lr_schedule(epoch):
+       
     
-    lr = 0.1
-    if epoch > 10:
-        lr = lr/10
-    return lr
+# TSNE  Classifier    
 
-
-# In[ ]:
-
-
-
-# Define model
-from keras import models
-from keras.models import Sequential
-from keras import layers
-from keras import optimizers
-
-# Freeze the layers which you don't want to train. Here I am freezing the first 5 layers.
-# for layer in model.layers:
-#     layer.trainable = False
-
-# model_checkpoint = ModelCheckpoint("Densenet_model_Checkpoint.h5", monitor="val_acc", save_best_only=True,
-#                                    save_weights_only=True)
-# lr_scheduler = LearningRateScheduler(lr_schedule) 
-# callbacks = [lr_scheduler, model_checkpoint]
-
-
-epochs = 900
-batch_size = 128
-
-model = Sequential()
-model.add(layers.Dense(2048, activation="relu"))
-model.add(layers.Dropout(0.5))
-# model.add(layers.Dense(1024, activation="relu"))
-# model.add(layers.Dropout(0.5))
-model.add(layers.Dense(100, activation="softmax"))
-
-
-# Compile model
-model.compile(optimizer=optimizers.Adam(),
-              loss='binary_crossentropy',
-              metrics=['acc'])
-
-
-y_train =  np_utils.to_categorical(train_labels, nb_classes)
-y_test =  np_utils.to_categorical(y_test, nb_classes)
-
-
-# train_labels = np.asarray(train_labels)
-# y = np.asarray(y_test)
-# Train model
-history = model.fit(train_feat, y_train,
-                    epochs=epochs,
-                    batch_size=batch_size,
-                    validation_data=(test_feat, y_test))
-model.summary()
-
-
-# In[19]:
-
-
-predictions_tr = model.predict(test_feat)
-predictions_tr = np.argmax(predictions_tr, axis=1)
-
-y_test = np.argmax(y_test, axis=1)
-
-
-# 20% Test Data Accuracy
-test_acc = accuracy_score(y_test,predictions_tr)
-print("Test Accuracy: %0.4f" % test_acc)
-
-
-# In[12]:
-
-
-# # train_data_dir = "data/train"
-# # validation_data_dir = "data/val"
-# nb_train_samples = xtrain.shape[0]
-# nb_validation_samples = xval.shape[0]
-# batch_size = 16
-# epochs = 50
-
-
-# # Freeze the layers which you don't want to train. Here I am freezing the first 5 layers.
-# for layer in model.layers:
-#     layer.trainable = False
+n_components_list = [3]
+C_list = [1]
+for n_components in n_components_list:
+    for C in C_list:
+        print(n_components)
+        print(C)
+        X_train_Embedded_tsne = TSNE(n_components=n_components).fit_transform(train_feat)
+        X_test_Embedded_tsne = TSNE(n_components=n_components).fit_transform(test_feat)
         
-# #Adding custom Layers 
-# x = model.output
-# x = Flatten()(x)
-# x = Dense(1024, activation="relu")(x)
-# x = Dropout(0.5)(x)
-# x = Dense(1024, activation="relu")(x)
-# predictions = Dense(100, activation="softmax")(x)
+        #Classifier SVM Linear Kernel 
+        clf = SVC(C=C, gamma='auto', kernel='rbf')
+        clf = clf.fit(X_train_Embedded,train_labels)
+        predictions_tr = (clf.predict(X_test_Embedded))
+
+        #20% Test Data Accuracy
+        test_acc = accuracy_score(y_test,predictions_tr)
+        print("Test Accuracy: %0.4f" % test_acc)
+        
+        
+        
+# LLE Classifier
+n_components_list = [2, 10, 50, 100]
+C_list = [1]
+for n_components in n_components_list:
+    for C in C_list:
+        print(n_components)
+        print(C)
+        X_train_Embedded_LLE = LocallyLinearEmbedding(n_components=n_components).fit_transform(train_feat)
+        X_test_Embedded_LLE = LocallyLinearEmbedding(n_components=n_components).fit_transform(test_feat)
+        
+        print(X_train_Embedded_LLE.shape)
+        #Classifier SVM Linear Kernel 
+        clf = SVC(C=C, gamma='auto', kernel='rbf')
+        clf = clf.fit(X_train_Embedded_LLE,train_labels)
+        predictions_tr = (clf.predict(X_test_Embedded_LLE))
+
+        #20% Test Data Accuracy
+        test_acc = accuracy_score(y_test,predictions_tr)
+        print("Test Accuracy: %0.4f" % test_acc)
 
 
-# # creating the final model 
-# model_final = Model(input = model.input, output = predictions)
 
-# # compile the model 
-# model_final.compile(loss = "categorical_crossentropy", optimizer = optimizers.SGD(lr=0.0001, momentum=0.9), metrics=["accuracy"])
-
-
-# # Initiate the train and test generators with data Augumentation 
-# train_datagen = ImageDataGenerator(
-# rescale = 1,
-# horizontal_flip = True,
-# fill_mode = "nearest",
-# zoom_range = 0.3,
-# width_shift_range = 0.3,
-# height_shift_range=0.3,
-# rotation_range=30)
-
-# test_datagen = ImageDataGenerator(
-# rescale = 1,
-# horizontal_flip = True,
-# fill_mode = "nearest",
-# zoom_range = 0.3,
-# width_shift_range = 0.3,
-# height_shift_range=0.3,
-# rotation_range=30)
-
-# train_datagen.fit(x_train)
-
-# train_generator = train_datagen.flow(
-# xtrain, ytrain,
-# batch_size = batch_size)
-
-# validation_generator = test_datagen.flow(
-# xval, yval)
-
-# # Save the model according to the conditions  
-# checkpoint = ModelCheckpoint("vgg16_1.h5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-# early = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, verbose=1, mode='auto')
-
-
-# # Train the model 
-# model_final.fit_generator(
-# train_generator,
-# samples_per_epoch = nb_train_samples,
-# epochs = epochs,
-# validation_data = validation_generator,
-# nb_val_samples = nb_validation_samples,
-# callbacks = [checkpoint, early])
 
