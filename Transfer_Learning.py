@@ -26,10 +26,6 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.manifold import TSNE
 from sklearn.manifold import LocallyLinearEmbedding
 
-
-# In[2]:
-
-
 nb_classes = 100
 
 with open('./train_data', 'rb') as f:
@@ -50,23 +46,10 @@ x_test = x_test/255.
 y_train =  np_utils.to_categorical(y_train, nb_classes)
 
 
-# In[ ]:
-
-
-
 img_width, img_height = 256, 256
 model = applications.inception_v3.InceptionV3(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3))
 
-
-# In[ ]:
-
-
 model.summary()
-
-
-# In[ ]:
-
-
 
 # yval =  np_utils.to_categorical(yval, nb_classes)
 steps = 10
@@ -99,10 +82,6 @@ for i in range(int(x_test.shape[0]/steps)):
 # yval = y_train[400:500,:]
 #xval = scipy.ndimage.zoom(xval, (1,8,8,1), order=0)
 
-
-# In[ ]:
-
-
 xtrain_features = xtrain_features[1:,:] 
 xtest_features = xtest_features[1:,:] 
 print(xtrain_features.shape)
@@ -111,10 +90,6 @@ print(xtest_features.shape)
 np.save('xtrain_features_mean_inceptionv3.npy', xtrain_features)
 np.save('xtest_features_mean_inceptionv3.npy', xtest_features)
 
-
-# In[3]:
-
-
 xtrain_features = np.load('xtrain_features_mean_inceptionv3.npy')
 xtest_features = np.load('xtest_features_mean_inceptionv3.npy')
 
@@ -122,15 +97,7 @@ train_feat = xtrain_features
 #val_feat = xtrain_features[45000:,:]
 test_feat = xtest_features
 
-
-# In[4]:
-
-
 _ , (test , y_test) = cifar100.load_data()
-
-
-# In[ ]:
-
 
 
 n_components_list = [550, 750, 1024]
@@ -178,8 +145,6 @@ for n_components in n_components_list:
         test_acc = accuracy_score(y_test,predictions_tr)
         print("Test Accuracy: %0.4f" % test_acc)
         
-       
-    
 # TSNE  Classifier    
 
 n_components_list = [3]
@@ -199,7 +164,6 @@ for n_components in n_components_list:
         #20% Test Data Accuracy
         test_acc = accuracy_score(y_test,predictions_tr)
         print("Test Accuracy: %0.4f" % test_acc)
-        
         
         
 # LLE Classifier
